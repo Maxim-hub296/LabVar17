@@ -1,62 +1,28 @@
-# Текстовый вариант
+# Текстовая ферма
+from time import sleep
+from func import *
 
-print("Добро пожаловать на ферму! Здесь мы будем растить культуры и зарабатывать на этом деньги!")
-print("""
-На этой ферме вы можете:
-Сажать растения (plant)
-Поливать их (water)
-Собирать зрелые культуру (harvest)
-Посмотреть как поживают ваши культуры (status)
-Продовать созревшие культуры (sell)
-Получить справку (help)
-И уйти на выходной (exit) 
-""")
-money = 0
 crop_stage = 0
+money = 15
 
 while True:
-    action = input("Что хотите сделать? Введите ваш выбор: ")
+    action = input("Что хотите сделать? Введите ваш выбор: ").lower().strip()
     match action:
 
         case "status":
-            print(f"Ваш капитал: {money}. Уровень вашего растения: {crop_stage}")
+            status(money, crop_stage)
         case "exit":
             print("До новых встреч!")
             break
         case "help":
-            print("""
-                На этой ферме вы можете:
-                Сажать растения (plant)
-                Поливать их (water)
-                Собирать зрелые культуру (harvest)
-                Посмотреть как поживают ваши культуры (status)
-                Продовать созревшие культуры (sell)
-                И уйти на выходной (exit) 
-                """)
+            show_help()
         case "plant":
-            if money >= 10 and crop_stage == 0:
-                money -= 10
-                crop_stage = 1
-                print(f"Вы посадили растение! Его уровень {crop_stage}, а ваш капитал {money}")
-            elif money < 10:
-                print("У вас недостаточно денег")
-            elif crop_stage >= 0:
-                print("Растение ужа посажено (не логично, но по условию лабы у вас одна грядка)")
+            crop_stage, money = plant(money, crop_stage)
         case "water":
-            if crop_stage < 3:
-                crop_stage += 1
-                print(f"Вы полили растение! Теперь его уровень {crop_stage}")
-            elif crop_stage == 0:
-                print("Вы еще не посадили растение! Крайне не выгодно поливать землю!")
-            else:
-                print(f"Растение не переживет еще одну поливку! Уровень вашего растения максимальный")
+            crop_stage = water(crop_stage)
+            sleep(1)
+            crop_stage = random_event(crop_stage)
         case "harvest":
-            if crop_stage >= 3:
-                money += 10
-                crop_stage = 0
-                print(f"Вы успешно собрали культуру! Ваш капитиал {money}")
-            else:
-                print(
-                    f"Ваша кульутра еще не выросла! Ее уровень {crop_stage}. Вы сможете собрать через {3 - crop_stage} уровня")
+            crop_stage = harvest(crop_stage, money, randint(1, 10))
         case _:
             print("Неизвестная комманда, старайтесь лучше")
